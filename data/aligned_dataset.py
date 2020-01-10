@@ -10,12 +10,12 @@ import cv2
 import csv
 
 def getfeats(featpath):
-	trans_points = np.empty([5,2],dtype=np.int64) 
-	with open(featpath, 'r') as csvfile:
-		reader = csv.reader(csvfile, delimiter=' ')
-		for ind,row in enumerate(reader):
-			trans_points[ind,:] = row
-	return trans_points
+    trans_points = np.empty([5,2],dtype=np.int64) 
+    with open(featpath, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=' ')
+        for ind,row in enumerate(reader):
+            trans_points[ind,:] = row
+    return trans_points
 
 def tocv2(ts):
     img = (ts.numpy()/2+0.5)*255
@@ -143,9 +143,8 @@ class AlignedDataset(BaseDataset):
                     soft_border_mask4.append(torch.Tensor(soft_border_mask).unsqueeze(0))
                     item['soft_'+regions[i]+'_mask'] = soft_border_mask4[i]
             for i in range(4):
-		item[regions[i]+'_A'] = A[:,int(center[i,1]-rhs[i]/2):int(center[i,1]+rhs[i]/2),int(center[i,0]-rws[i]/2):int(center[i,0]+rws[i]/2)]
-		item[regions[i]+'_B'] = B[:,int(center[i,1]-rhs[i]/2):int(center[i,1]+rhs[i]/2),int(center[i,0]-rws[i]/2):int(center[i,0]+rws[i]/2)]
-
+                item[regions[i]+'_A'] = A[:,int(center[i,1]-rhs[i]/2):int(center[i,1]+rhs[i]/2),int(center[i,0]-rws[i]/2):int(center[i,0]+rws[i]/2)]
+                item[regions[i]+'_B'] = B[:,int(center[i,1]-rhs[i]/2):int(center[i,1]+rhs[i]/2),int(center[i,0]-rws[i]/2):int(center[i,0]+rws[i]/2)]
                 if self.opt.soft_border:
                     item[regions[i]+'_A'] = item[regions[i]+'_A'] * soft_border_mask4[i].repeat(input_nc/output_nc,1,1)
                     item[regions[i]+'_B'] = item[regions[i]+'_B'] * soft_border_mask4[i]
@@ -186,10 +185,10 @@ class AlignedDataset(BaseDataset):
                 mask2 = mask2.index_select(2, idx)
             mask2 = (mask2 >= 0.5).float()
 
-	    hair_A = (A/2+0.5) * mask.repeat(3,1,1) * mask2.repeat(3,1,1) * 2 - 1
+            hair_A = (A/2+0.5) * mask.repeat(3,1,1) * mask2.repeat(3,1,1) * 2 - 1
             #hair_A = (A/2+0.5) * mask.repeat(input_nc/output_nc,1,1) * mask2.repeat(input_nc/output_nc,1,1) * 2 - 1
             hair_B = (B/2+0.5) * mask * mask2 * 2 - 1
- 	    bg_A = (A/2+0.5) * (torch.ones(mask2.shape)-mask2).repeat(3,1,1) * 2 - 1
+            bg_A = (A/2+0.5) * (torch.ones(mask2.shape)-mask2).repeat(3,1,1) * 2 - 1
             #bg_A = (A/2+0.5) * (torch.ones(mask2.shape)-mask2).repeat(input_nc/output_nc,1,1) * 2 - 1
             bg_B = (B/2+0.5) * (torch.ones(mask2.shape)-mask2) * 2 - 1
             item['hair_A'] = hair_A
