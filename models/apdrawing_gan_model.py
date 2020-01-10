@@ -347,4 +347,3 @@ class APDrawingGANModel(BaseModel):
         self.optimizer_G.zero_grad()
         self.backward_G()
         self.optimizer_G.step()
-        
