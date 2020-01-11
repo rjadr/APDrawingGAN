@@ -360,18 +360,18 @@ class BaseModel():
         NOSE_W = self.opt.NOSE_W * ratio
         MOUTH_H = self.opt.MOUTH_H * ratio
         MOUTH_W = self.opt.MOUTH_W * ratio
-        eyel = torch.ones((bs,nc,EYE_H,EYE_W)).to(self.device)
-        eyer = torch.ones((bs,nc,EYE_H,EYE_W)).to(self.device)
-        nose = torch.ones((bs,nc,NOSE_H,NOSE_W)).to(self.device)
-        mouth = torch.ones((bs,nc,MOUTH_H,MOUTH_W)).to(self.device)
+        eyel = torch.ones((bs,nc,int(EYE_H),int(EYE_W))).to(self.device)
+        eyer = torch.ones((bs,nc,int(EYE_H),int(EYE_W))).to(self.device)
+        nose = torch.ones((bs,nc,int(NOSE_H),int(NOSE_W))).to(self.device)
+        mouth = torch.ones((bs,nc,int(MOUTH_H),int(MOUTH_W))).to(self.device)
         for i in range(bs):
             center = self.center[i]
-            eyel[i] = fakeAB[i,:,center[0,1]-EYE_H/2:center[0,1]+EYE_H/2,center[0,0]-EYE_W/2:center[0,0]+EYE_W/2]
-            eyer[i] = fakeAB[i,:,center[1,1]-EYE_H/2:center[1,1]+EYE_H/2,center[1,0]-EYE_W/2:center[1,0]+EYE_W/2]
-            nose[i] = fakeAB[i,:,center[2,1]-NOSE_H/2:center[2,1]+NOSE_H/2,center[2,0]-NOSE_W/2:center[2,0]+NOSE_W/2]
-            mouth[i] = fakeAB[i,:,center[3,1]-MOUTH_H/2:center[3,1]+MOUTH_H/2,center[3,0]-MOUTH_W/2:center[3,0]+MOUTH_W/2]
-        hair = (fakeAB/2+0.5) * self.mask.repeat(1,ncr,1,1) * self.mask2.repeat(1,ncr,1,1) * 2 - 1
-        bg = (fakeAB/2+0.5) * (torch.ones(fakeAB.shape).to(self.device)-self.mask2.repeat(1,ncr,1,1)) * 2 - 1
+            eyel[i] = fakeAB[i,:,int(center[0,1]-EYE_H/2):int(center[0,1]+EYE_H/2),int(center[0,0]-EYE_W/2):int(center[0,0]+EYE_W/2)]
+            eyer[i] = fakeAB[i,:,int(center[1,1]-EYE_H/2):int(center[1,1]+EYE_H/2),int(center[1,0]-EYE_W/2):int(center[1,0]+EYE_W/2)]
+            nose[i] = fakeAB[i,:,int(center[2,1]-NOSE_H/2):int(center[2,1]+NOSE_H/2),int(center[2,0]-NOSE_W/2):int(center[2,0]+NOSE_W/2)]
+            mouth[i] = fakeAB[i,:,int(center[3,1]-MOUTH_H/2):int(center[3,1]+MOUTH_H/2),int(center[3,0]-MOUTH_W/2):int(center[3,0]+MOUTH_W/2)]
+        hair = (fakeAB/2+0.5) * self.mask.repeat(1,int(ncr),1,1) * self.mask2.repeat(1,int(ncr),1,1) * 2 - 1
+        bg = (fakeAB/2+0.5) * (torch.ones(fakeAB.shape).to(self.device)-self.mask2.repeat(1,int(ncr),1,1)) * 2 - 1
         return eyel, eyer, nose, mouth, hair, bg
     
     def getaddw(self,local_name):
